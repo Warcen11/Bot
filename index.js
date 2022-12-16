@@ -5,6 +5,8 @@ const token=process.env.TOKEN;
 
 const bot = new TelegramBot(token, {polling: true});
 
+const chatId = msg.chat.id;
+
 bot.setMyCommands(
     [
         {command: '/start', description: 'Приветствие'},
@@ -12,9 +14,8 @@ bot.setMyCommands(
 )
 
 bot.on('message', async msg => {
-    const chatId = msg.chat.id;
     if(msg.text == '/start'){
-        return bot.sendMessage(chatId, 'Привет, я бот созданный для проекта "Хочу в поездку"');
+        return bot.sendMessage(chatId, 'Привет, я буду отправлять сюда информацию о ваших поездках');
     }
     return bot.sendMessage(chatId, 'Простите, но я не понял что вы сказали')
   });
