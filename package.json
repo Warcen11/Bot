@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/Warcen11/Bot#readme",
   "dependencies": {
+    "axios": "^1.2.1",
     "dotenv": "^16.0.3",
     "node-telegram-bot-api": "^0.60.0",
     "nodemon": "^2.0.20"
