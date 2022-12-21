@@ -5,19 +5,20 @@ const token=process.env.TOKEN;
 
 const bot = new TelegramBot(token, {polling: true});
 
-axios.get('http://localhost:3030/trips/get-all').then(response =>{
-    let inline_keyboard = []
-    for(let i = 0; i<response.data.length; i++){
-        inline_keyboard[i] = [{text: response.data[i].name, callback_data: response.data[i]._id}]
-    }
-    tripInfo = {
-        reply_markup: JSON.stringify({
-            inline_keyboard
+const getTripList = async () => {
+    await axios.get('http://localhost:3030/trips/get-all').then(async response =>{
+        let inline_keyboard = []
+        await response.data.forEach((item) =>{
+            inline_keyboard.push([{text: item.name, callback_data: item._id}])
         })
-    }
-})
-
-
+        tripList = {
+            reply_markup: JSON.stringify({
+                inline_keyboard
+            })
+        }
+    })
+    return tripList
+}
 
 bot.setMyCommands(
     [
@@ -32,7 +33,13 @@ bot.on('message', async msg => {
         return bot.sendMessage(chatId, 'Привет, я буду отправлять сюда информацию о ваших поездках');
     }
     if(msg.text == '/trips'){
-        return bot.sendMessage(chatId, 'Ваши поездки:', tripInfo)
+        return getTripList().then(tripList => {
+            bot.sendMessage(chatId, 'Ваши поездки :', tripList)
+        })
     return bot.sendMessage(chatId, 'Простите, но я не понял что вы сказали')
     }
+})
+bot.on('callback_query', async msg => {
+    chatId = msg.message.chat.id
+    console.log(msg)
 })
