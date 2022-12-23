@@ -41,5 +41,12 @@ bot.on('message', async msg => {
 })
 bot.on('callback_query', async msg => {
     chatId = msg.message.chat.id
-    console.log(msg)
+    tripId = msg.data
+    axios.get(`http://localhost:3030/trips/get-by-id?_id=${tripId}`).then(res => {
+        bot.sendMessage(chatId, `${res.data.name}
+${res.data.start}
+${res.data.end}
+http://localhost:5173/trip?_id=${tripId}`
+            )
+    }) 
 })
