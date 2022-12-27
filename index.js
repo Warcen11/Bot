@@ -9,7 +9,7 @@ const getTripList = async () => {
     await axios.get('http://localhost:3030/trips/get-all').then(async response =>{
         let inline_keyboard = []
         await response.data.forEach((item) =>{
-            inline_keyboard.push([{text: item.name, callback_data: item._id}])
+            inline_keyboard.push([{text: item.name, web_app: { url: 'https://jet-green.github.io/IWantATrip/'}}])
         })
         tripList = {
             reply_markup: JSON.stringify({
