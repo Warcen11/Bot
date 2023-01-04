@@ -5,32 +5,16 @@ const token=process.env.TOKEN;
 
 const bot = new TelegramBot(token, {polling: true});
 
-const getTripList = async () => {
-    await axios.get('http://localhost:3030/trips/get-all').then(async response =>{
-        let inline_keyboard = []
-        await response.data.forEach((item) =>{
-            inline_keyboard.push([{text: item.name, web_app: { url: 'https://jet-green.github.io/IWantATrip/'}}])
-        })
-        tripList = {
-            reply_markup: JSON.stringify({
-                inline_keyboard
-            })
-        }
-    })
-    return tripList
-}
-
 bot.setMyCommands(
     [
         {command: '/start', description: 'Приветствие'},
-        {command: '/trips', description: 'Узнать о своих поездках'},
     ]
 )
 
 bot.on('message', async msg => {
     chatId = msg.chat.id
     if(msg.text == '/start'){
-        return bot.sendMessage(chatId, 'Привет, я буду отправлять сюда информацию о ваших поездках');
+        return bot.sendMessage(chatId, 'Привет');
     }
     if(msg.text == '/trips'){
         return getTripList().then(tripList => {
@@ -39,3 +23,32 @@ bot.on('message', async msg => {
     return bot.sendMessage(chatId, 'Простите, но я не понял что вы сказали')
     }
 })
+
+
+const express = require('express');
+const cors = require('cors')
+const app = express()
+
+app.use(express.json())
+app.use(cors({
+    origin: ["http://localhost:5173"],
+    // credentials: true
+}))
+
+app.post('/create-trip', function (req) {
+    bot.sendMessage(660411344, `Поездка создана!
+http://localhost:5173/trip?_id=${req.query._id}`)
+})
+app.post('/create-user', function (req){
+    bot.sendMessage(660411344, `Зарегистрирован пользователь:
+${req.query._fullname}
+${req.query._email}`)
+})
+
+try {
+    app.listen(4089, () => {
+        console.log(`Server is running on http://localhost:4089`);
+    })
+} catch (error) {
+    console.log('у тебя ошибка');
+}
