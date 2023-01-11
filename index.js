@@ -36,13 +36,21 @@ app.use(cors({
 }))
 
 app.post('/create-trip', function (req) {
-    bot.sendMessage(660411344, `Поездка создана!
+    bot.sendMessage(660411344, `Поездка создана:
 http://localhost:5173/trip?_id=${req.query._id}`)
 })
 app.post('/create-user', function (req){
     bot.sendMessage(660411344, `Зарегистрирован пользователь:
 ${req.query._fullname}
 ${req.query._email}`)
+})
+app.post('/add-companion', function (req) {
+    bot.sendMessage(660411344, `Добавлен попутчик:
+${req.query.name}`)
+})
+app.post('/add-guide', function (req) {
+    bot.sendMessage(660411344, `Добавлен элемент гида:
+${req.query.name}`)
 })
 
 try {
